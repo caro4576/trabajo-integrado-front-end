@@ -6,9 +6,10 @@ const characterList = document.getElementById("character-list");
 const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
 const statusFilter = document.getElementById("status-filter");
-const modal = document.getElementById("character-modal");
 const modalDetails = document.getElementById("modal-details");
-const closeModal = document.querySelector(".close");
+
+// Modal Bootstrap
+const characterModal = new bootstrap.Modal(document.getElementById("character-modal"));
 
 // Obtener personajes
 async function fetchCharacters(page = 1, status = "") {
@@ -23,21 +24,30 @@ async function fetchCharacters(page = 1, status = "") {
         updatePagination(data.info);
     } catch (error) {
         console.error("Error al obtener personajes:", error);
+        characterList.innerHTML = "<p class='text-danger text-center'>No se pudieron cargar los personajes. Inténtalo más tarde.</p>";
     }
 }
 
-// Mostrar personajes en la página
+// Mostrar personajes con tarjetas Bootstrap (sin botón "Ver detalles")
 function displayCharacters(characters) {
     characterList.innerHTML = "";
     characters.forEach(character => {
         const characterCard = document.createElement("div");
-        characterCard.classList.add("character-card");
+        characterCard.classList.add("col-md-4", "col-lg-3");
+
         characterCard.innerHTML = `
-            <img src="${character.image}" alt="${character.name}">
-            <h3>${character.name}</h3>
-            <p>Estado: ${character.status}</p>
+            <div class="card bg-secondary text-light shadow-lg" style="cursor: pointer;">
+                <img src="${character.image}" class="card-img-top" alt="${character.name}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">${character.name}</h5>
+                    <p class="card-text">Estado: ${character.status}</p>
+                </div>
+            </div>
         `;
+
+        // Agregar evento de clic en la tarjeta para mostrar detalles
         characterCard.addEventListener("click", () => showCharacterDetails(character));
+
         characterList.appendChild(characterCard);
     });
 }
@@ -48,20 +58,21 @@ function updatePagination(info) {
     nextBtn.disabled = !info.next;
 }
 
-// Mostrar detalles del personaje en un modal
+// Mostrar detalles del personaje en el modal Bootstrap
+// Mostrar detalles del personaje en el modal Bootstrap
 function showCharacterDetails(character) {
     modalDetails.innerHTML = `
-        <img src="${character.image}" alt="${character.name}">
-        <h2>${character.name}</h2>
-        <p>Especie: ${character.species}</p>
-        <p>Género: ${character.gender}</p>
-        <p>Origen: ${character.origin.name}</p>
+        <div class="text-center">
+            <img src="${character.image}" class="img-fluid rounded" alt="${character.name}">
+            <h2 class="mt-3">${character.name}</h2>
+            <p><strong>Especie:</strong> ${character.species}</p>
+            <p><strong>Género:</strong> ${character.gender}</p>
+            <p><strong>Origen:</strong> ${character.origin.name}</p>
+        </div>
     `;
-    modal.classList.remove("hidden");
+    characterModal.show();
 }
 
-// Cerrar modal
-closeModal.addEventListener("click", () => modal.classList.add("hidden"));
 
 // Manejar eventos
 prevBtn.addEventListener("click", () => {
