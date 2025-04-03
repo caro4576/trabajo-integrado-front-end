@@ -9,11 +9,11 @@ body{
 
 #detalles-modal h2 {
     text-transform: uppercase;
-    color: #ffc107; /* Amarillo */
+    color: #ffc107; 
 }
 
 .mi-boton {
-    background-color: #ff5733 !important; /* Sobrescribe Bootstrap */
+    background-color: #ff5733; 
     border-radius: 20px;
 }
 
