@@ -1,0 +1,19 @@
+body{
+    background-color:royalblue;    
+}
+
+#detalles-modal img {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+#detalles-modal h2 {
+    text-transform: uppercase;
+    color: #ffc107; /* Amarillo */
+}
+
+.mi-boton {
+    background-color: #ff5733 !important; /* Sobrescribe Bootstrap */
+    border-radius: 20px;
+}
+

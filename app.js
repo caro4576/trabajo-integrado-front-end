@@ -1,96 +1,95 @@
-const API_URL = "https://rickandmortyapi.com/api/character";
-let currentPage = 1;
+const URL_API = "https://rickandmortyapi.com/api/character";
+let paginaActual = 1;
 
 // Elementos del DOM
-const characterList = document.getElementById("character-list");
-const prevBtn = document.getElementById("prev");
-const nextBtn = document.getElementById("next");
-const statusFilter = document.getElementById("status-filter");
-const modalDetails = document.getElementById("modal-details");
+const listaPersonajes = document.getElementById("lista-personajes");
+const btnAnterior = document.getElementById("btn-anterior");
+const btnSiguiente = document.getElementById("btn-siguiente");
+const filtroEstado = document.getElementById("filtro-estado");
+const detallesModal = document.getElementById("detalles-modal");
 
-// Modal Bootstrap
-const characterModal = new bootstrap.Modal(document.getElementById("character-modal"));
+// Modal de Bootstrap
+const modalPersonaje = new bootstrap.Modal(document.getElementById("modal-personaje"));
 
 // Obtener personajes
-async function fetchCharacters(page = 1, status = "") {
-    let url = `${API_URL}/?page=${page}`;
-    if (status) url += `&status=${status}`;
+async function obtenerPersonajes(pagina = 1, estado = "") {
+    let url = `${URL_API}/?page=${pagina}`;
+    if (estado) url += `&status=${estado}`;
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+        const respuesta = await fetch(url);
+        const datos = await respuesta.json();
 
-        displayCharacters(data.results);
-        updatePagination(data.info);
+        mostrarPersonajes(datos.results);
+        actualizarPaginacion(datos.info);
     } catch (error) {
         console.error("Error al obtener personajes:", error);
-        characterList.innerHTML = "<p class='text-danger text-center'>No se pudieron cargar los personajes. Inténtalo más tarde.</p>";
+        listaPersonajes.innerHTML = "<p class='text-danger text-center'>No se pudieron cargar los personajes. Inténtalo más tarde.</p>";
     }
 }
 
-// Mostrar personajes con tarjetas Bootstrap (sin botón "Ver detalles")
-function displayCharacters(characters) {
-    characterList.innerHTML = "";
-    characters.forEach(character => {
-        const characterCard = document.createElement("div");
-        characterCard.classList.add("col-md-4", "col-lg-3");
+// Mostrar personajes con tarjetas Bootstrap
+function mostrarPersonajes(personajes) {
+    listaPersonajes.innerHTML = "";
+    personajes.forEach(personaje => {
+        const tarjetaPersonaje = document.createElement("div");
+        tarjetaPersonaje.classList.add("col-md-4", "col-lg-3");
 
-        characterCard.innerHTML = `
+        tarjetaPersonaje.innerHTML = `
             <div class="card bg-secondary text-light shadow-lg" style="cursor: pointer;">
-                <img src="${character.image}" class="card-img-top" alt="${character.name}">
+                <img src="${personaje.image}" class="card-img-top" alt="${personaje.name}">
                 <div class="card-body text-center">
-                    <h5 class="card-title">${character.name}</h5>
-                    <p class="card-text">Estado: ${character.status}</p>
+                    <h5 class="card-title">${personaje.name}</h5>
+                    <p class="card-text">Estado: ${personaje.status}</p>
                 </div>
             </div>
         `;
 
         // Agregar evento de clic en la tarjeta para mostrar detalles
-        characterCard.addEventListener("click", () => showCharacterDetails(character));
+        tarjetaPersonaje.addEventListener("click", () => mostrarDetallesPersonaje(personaje));
 
-        characterList.appendChild(characterCard);
+        listaPersonajes.appendChild(tarjetaPersonaje);
     });
 }
 
 // Actualizar los botones de paginación
-function updatePagination(info) {
-    prevBtn.disabled = !info.prev;
-    nextBtn.disabled = !info.next;
+function actualizarPaginacion(info) {
+    btnAnterior.disabled = !info.prev;
+    btnSiguiente.disabled = !info.next;
 }
 
-// Mostrar detalles del personaje en el modal Bootstrap
-// Mostrar detalles del personaje en el modal Bootstrap
-function showCharacterDetails(character) {
-    modalDetails.innerHTML = `
+// Mostrar detalles del personaje en el modal
+function mostrarDetallesPersonaje(personaje) {
+    detallesModal.innerHTML = `
         <div class="text-center">
-            <img src="${character.image}" class="img-fluid rounded" alt="${character.name}">
-            <h2 class="mt-3">${character.name}</h2>
-            <p><strong>Especie:</strong> ${character.species}</p>
-            <p><strong>Género:</strong> ${character.gender}</p>
-            <p><strong>Origen:</strong> ${character.origin.name}</p>
+            <img src="${personaje.image}" class="img-fluid rounded" alt="${personaje.name}">
+            <h2 class="mt-3">${personaje.name}</h2>
+            <p><strong>Especie:</strong> ${personaje.species}</p>
+            <p><strong>Género:</strong> ${personaje.gender}</p>
+            <p><strong>Origen:</strong> ${personaje.origin.name}</p>
         </div>
     `;
-    characterModal.show();
+    modalPersonaje.show();
 }
 
-
 // Manejar eventos
-prevBtn.addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;
-        fetchCharacters(currentPage, statusFilter.value);
+btnAnterior.addEventListener("click", () => {
+    if (paginaActual > 1) {
+        paginaActual--;
+        obtenerPersonajes(paginaActual, filtroEstado.value);
     }
 });
 
-nextBtn.addEventListener("click", () => {
-    currentPage++;
-    fetchCharacters(currentPage, statusFilter.value);
+btnSiguiente.addEventListener("click", () => {
+    paginaActual++;
+    obtenerPersonajes(paginaActual, filtroEstado.value);
 });
 
-statusFilter.addEventListener("change", () => {
-    currentPage = 1;
-    fetchCharacters(currentPage, statusFilter.value);
+filtroEstado.addEventListener("change", () => {
+    paginaActual = 1;
+    obtenerPersonajes(paginaActual, filtroEstado.value);
 });
 
-// Cargar los personajes al iniciar
-fetchCharacters();
+// Cargar personajes al inicio
+obtenerPersonajes();
+
