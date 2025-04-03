@@ -62,11 +62,14 @@ function actualizarPaginacion(info) {
 function mostrarDetallesPersonaje(personaje) {
     detallesModal.innerHTML = `
         <div class="text-center">
-            <img src="${personaje.image}" class="img-fluid rounded" alt="${personaje.name}">
-            <h2 class="mt-3">${personaje.name}</h2>
+            <img src="${personaje.image}" class="img-fluid rounded border border-info" alt="${personaje.name}">
+            <h2 class="mt-3 text-warning">${personaje.name}</h2>
             <p><strong>Especie:</strong> ${personaje.species}</p>
             <p><strong>Género:</strong> ${personaje.gender}</p>
             <p><strong>Origen:</strong> ${personaje.origin.name}</p>
+            <p><strong>Ubicación actual:</strong> ${personaje.location.name}</p>
+            <p><strong>Tipo:</strong> ${personaje.type ? personaje.type : "Desconocido"}</p>
+            <p><strong>Apariciones en episodios:</strong> ${personaje.episode.length}</p>
         </div>
     `;
     modalPersonaje.show();
